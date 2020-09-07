@@ -89,7 +89,10 @@ namespace PadLab1Broker
                 {
                     Console.WriteLine(e.Message);
                     var address = connection.Socket.RemoteEndPoint.ToString();
-                    connection.Socket.Close();       
+                    Storage.publisherStorage.Remove(address);
+                    Storage.subscriberStorage.Remove(address);
+                    
+                    connection.Socket.Close();                   
                 }
             }
         }
