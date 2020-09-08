@@ -8,9 +8,9 @@ namespace PadLab1Broker
 {
     class Payload
     {
-        public string Topic { get; set; }
-        public string UserName { get; set; }
-        public string Message { get; set; }
+        public string topic { get; set; }
+        public string username { get; set; }
+        public string message { get; set; }
 
 
     }
