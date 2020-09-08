@@ -16,6 +16,7 @@ namespace PadLab1Broker
             var message = Encoding.UTF8.GetString(messageBytes);
             string publisherName = "{\"publisherName\":";
             string subscribe = "{\"subscribe\":";
+            string unsubscribe = "{\"unsubscribe\":";
 
             if (message.StartsWith(publisherName))
             {
@@ -53,9 +54,21 @@ namespace PadLab1Broker
                 var data = Encoding.UTF8.GetBytes(json);
                 connectionInfo.Socket.Send(data);
             }
+            else if (message.StartsWith(unsubscribe))
+            {
+                var unsubscribeResponse = JsonConvert.DeserializeObject<UnsubscribeResponse>(message);
+                var topic = unsubscribeResponse.unsubscribe; //message.Split(publisherNameArray).LastOrDefault();
+                var subscriber = Storage.subscriberStorage.Contains(connectionInfo.Socket.RemoteEndPoint.ToString());
+                var statusCode = subscriber.RemoveTopic(topic);
+                Response resp = new Response(statusCode);
+                var json = JsonConvert.SerializeObject(resp);
+                var data = Encoding.UTF8.GetBytes(json);
+                connectionInfo.Socket.Send(data);
+            }
             else
             {
                 Payload payload = JsonConvert.DeserializeObject<Payload>(message);
+                payload.username = Storage.publisherStorage.GetUserByAddress(connectionInfo.Socket.RemoteEndPoint.ToString());
                 PayloadStorage.Add(payload);
             }
 

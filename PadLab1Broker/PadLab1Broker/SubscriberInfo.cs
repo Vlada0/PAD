@@ -26,5 +26,9 @@ namespace PadLab1Broker
             topicList.Add(topic);
             return 200;
         }
+        public int RemoveTopic(string topic)
+        {
+            return topicList.Remove(topic)?200:400;
+        }
     }
 }

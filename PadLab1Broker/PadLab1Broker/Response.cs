@@ -23,4 +23,8 @@ namespace PadLab1Broker
     {
         public string subscribe { get; set; }
     }
+    class UnsubscribeResponse
+    {
+        public string unsubscribe { get; set; }
+    }
 }
