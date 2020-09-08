@@ -2,10 +2,9 @@ import * as net from "net";
 import { Socket } from "dgram";
 const readline = require('readline');
 const client = new net.Socket();
-const port = 3000;
+const port = 11000;
 const host = '127.0.0.1';
 
-let userName = "";
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -16,8 +15,7 @@ const rl = readline.createInterface({
 client.connect(port, host, function() {
     console.log('Connected');
     rl.question('Enter username ', (answer) => {
-        userName = answer;
-        enterData();
+        sendUsername(answer);
       });   
 });
 
@@ -47,7 +45,6 @@ function enterData() {
 
 function sendMessage(topic, message) {
     let data = {
-        name: userName,
         topic: topic,
         message: message
     }
@@ -56,7 +53,7 @@ function sendMessage(topic, message) {
 }
 
 function askIfContinue() {
-    rl.question('Continue? ', (answer) => {
+    rl.question('Do you want to send message? ', (answer) => {
         if(answer === 'y' || answer === 'Y') {
             enterData();
         } else {
@@ -64,4 +61,11 @@ function askIfContinue() {
             client.destroy();
         }
     })
+}
+function sendUsername(userName) {
+    let data = {
+        publisherName: userName
+    }
+    let jsonData = JSON.stringify(data);
+    client.write(jsonData)
 }
