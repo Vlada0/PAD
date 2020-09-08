@@ -13,6 +13,11 @@ namespace PadLab1Broker
 
             BrSocket brokerSocket = new BrSocket();
             brokerSocket.StartBroker("127.0.0.1", 11000);
+
+            var worker = new Worker();
+            Task.Factory.StartNew(worker.DoSendMessageWork, TaskCreationOptions.LongRunning);
+
+
             Console.ReadLine();
         }
     }
