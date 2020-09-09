@@ -21,14 +21,14 @@ namespace PadLab1Broker
         {
             if (topicList.Contains(topic))
             {
-                return 400;
+                return 401;//Topic already exists
             }
             topicList.Add(topic);
             return 200;
         }
         public int RemoveTopic(string topic)
         {
-            return topicList.Remove(topic)?200:400;
+            return topicList.Remove(topic)?200:402;//402-Topic does not exist (не подписан)
         }
     }
 }

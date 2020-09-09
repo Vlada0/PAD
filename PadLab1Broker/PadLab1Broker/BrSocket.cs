@@ -38,7 +38,6 @@ namespace PadLab1Broker
             try
             {
                 connection.Socket = socket.EndAccept(asyncResult);
-               // connection.Address = connection.Socket.RemoteEndPoint.ToString();
                 connection.Socket.BeginReceive(connection.Buffer, 0, connection.Buffer.Length, SocketFlags.None, ReceiveCallBack, connection);
             }
             catch(Exception e)
@@ -63,12 +62,6 @@ namespace PadLab1Broker
 
                 if(response == SocketError.Success)
                 {
-
-                    var resp = new Response(200);
-                    var json = JsonConvert.SerializeObject(resp);
-                    var data = Encoding.UTF8.GetBytes(json);
-                    senderSocket.Send(data);
-
                     byte[] message = new byte[buffer_size];
                     Array.Copy(connection.Buffer, message, message.Length);
                     Handler.Handle(message, connection);
