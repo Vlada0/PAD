@@ -17,7 +17,6 @@ client.connect(port, host, function() {
 })
 
 rl.on('line', (topic) => {
-    console.log(topic);
     let arr = topic.split(' ');
     if(arr.shift() === 'rem') {
         unsubscribeOn(arr.join(' '));
@@ -32,7 +31,7 @@ client.on('data', function(data) {
 
     switch(statusCode) {
         case 200:
-            console.log('Successfull subscribtion')
+            console.log('Successfull operation')
             break;
         case  401: 
             console.log('Topic already exists')
