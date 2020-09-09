@@ -14,19 +14,22 @@ const rl = readline.createInterface({
 
 client.connect(port, host, function() {
     console.log('Connected');
-    rl.question('Enter username ', (answer) => {
-        sendUsername(answer);
-      });   
+    askUsername();
 });
 
 client.on('data', function(data){
     let json = JSON.parse(data.toString());
     let statusCode = json.statusCode;
+    switch(statusCode) {
+        case "200":
+            askIfContinue();
+            break;
+        case "400":
+            console.log('Invalid username');
+            askUsername();
+            
 
-    if(statusCode !== 200) {
-        console.log('Cannot send your message');
-    } 
-    askIfContinue();
+    }
 })
 
 client.on('error', function(error){
@@ -68,4 +71,10 @@ function sendUsername(userName) {
     }
     let jsonData = JSON.stringify(data);
     client.write(jsonData)
+}
+
+function askUsername() {
+    rl.question('Enter username ', (answer) => {
+        sendUsername(answer);
+      });   
 }
