@@ -9,7 +9,6 @@ namespace PadLab1Broker
 {
     class Handler
     {
-        
         public static void Handle(byte[] messageBytes, ConnectInformation connectionInfo)
         {
             int statusCode;
@@ -37,7 +36,6 @@ namespace PadLab1Broker
                 payload.username = Storage.publisherStorage.GetUserByAddress(connectionInfo.Socket.RemoteEndPoint.ToString());
                 PayloadStorage.Add(payload);
             }
-
             Response resp = new Response(statusCode);
             var json = JsonConvert.SerializeObject(resp);
             var data = Encoding.UTF8.GetBytes(json);
@@ -74,7 +72,6 @@ namespace PadLab1Broker
 
         private static int HandleUnsubscribe(ConnectInformation connectionInfo, string message)
         {
-
             var unsubscribeResponse = JsonConvert.DeserializeObject<UnsubscribeResponse>(message);
             var topic = unsubscribeResponse.unsubscribe; 
             var subscriber = Storage.subscriberStorage.Contains(connectionInfo.Socket.RemoteEndPoint.ToString());

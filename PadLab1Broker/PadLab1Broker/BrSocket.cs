@@ -42,7 +42,7 @@ namespace PadLab1Broker
             }
             catch(Exception e)
             {
-                Console.WriteLine("Не удалось принять сообщение");
+                Console.WriteLine("Не удалось принять сообщение " + e.Message);
             }
             finally
             {
@@ -70,7 +70,7 @@ namespace PadLab1Broker
             }
             catch (Exception e)
             {
-                Console.WriteLine("Не удалось получить данные"+e.Message);
+                Console.WriteLine("Не удалось получить данные "+e.Message);
             }
             finally
             {
@@ -80,7 +80,7 @@ namespace PadLab1Broker
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.WriteLine("Ошибка " + e.Message);
                     var address = connection.Socket.RemoteEndPoint.ToString();
                     Storage.publisherStorage.Remove(address);
                     Storage.subscriberStorage.Remove(address);
