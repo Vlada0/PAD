@@ -30,12 +30,21 @@ client.on('data', function(data) {
     let json = JSON.parse(data.toString());
     let statusCode = json.statusCode;
 
-    if(typeof statusCode !== 'undefined' && statusCode !== 200) {
-        console.log('Cannot send your message');
-    } else {
-        console.log(json.username + ' ' + json.topic + ' ' + json.message);
+    switch(statusCode) {
+        case "200":
+            console.log('Successfull subscribtion')
+            break;
+        case  "401": 
+            console.log('Topic already exists')
+            break;
+        case "402":
+            console.log('Topic doesn\'t exists')
+            break;
     }
 
+    if(typeof statusCode === 'undefined') {
+        console.log(json.username + ' ' + json.topic + ' ' + json.message);
+    }
 })
 
 function subscribeOn(topic) {
