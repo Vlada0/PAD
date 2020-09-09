@@ -9,8 +9,6 @@ namespace PadLab1Broker
     public class PublisherInfo:ConnectInformation
     {
         public string UserName { get; set; }
-
-
         public PublisherInfo(ConnectInformation connection, string userName):base()
         {
             base.Socket = connection.Socket;

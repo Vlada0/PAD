@@ -17,8 +17,8 @@ namespace PadLab1Broker
                 selected = connections.Where(x => x.topicList.Contains(topic)).ToList();
             }
             return selected;
-
         }
+
         public SubscriberInfo Contains(string remoteAddress)
         {
             SubscriberInfo subscriber;

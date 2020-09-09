@@ -12,12 +12,7 @@ namespace PadLab1Broker
         public const int Buffer_Size = 2048;
 
         public byte[] Buffer { get; set; }
-
         public Socket Socket { get; set; }
-       // public string Address { get; set; }
-       // public string Topic { get; set; }
-       // public string UserName { get; set; }
-
 
         public ConnectInformation()
         {

@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace PadLab1Broker
 {
     public abstract class ConnectStorage<T> where T: ConnectInformation
-    {
-        
+    { 
         protected  List<T> connections;
         protected  object locker;
 
@@ -33,7 +32,5 @@ namespace PadLab1Broker
                 connections.RemoveAll(x => x.Socket.RemoteEndPoint.ToString() == address);
             }
         }
-
-     
     }
 }

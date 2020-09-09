@@ -16,8 +16,7 @@ namespace PadLab1Broker
 
             var worker = new Worker();
             Task.Factory.StartNew(worker.DoSendMessageWork, TaskCreationOptions.LongRunning);
-
-
+            
             Console.ReadLine();
         }
     }

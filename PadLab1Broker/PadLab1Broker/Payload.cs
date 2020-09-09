@@ -11,8 +11,5 @@ namespace PadLab1Broker
         public string topic { get; set; }
         public string username { get; set; }
         public string message { get; set; }
-
-
     }
-  
 }

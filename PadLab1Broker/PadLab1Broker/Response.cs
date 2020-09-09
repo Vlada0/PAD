@@ -15,14 +15,17 @@ namespace PadLab1Broker
             this.statusCode = status_Code;
         }
     }
+
     class UserNameResponse
     {
         public string publisherName { get; set; }
     }
+
     class SubscribeResponse
     {
         public string subscribe { get; set; }
     }
+
     class UnsubscribeResponse
     {
         public string unsubscribe { get; set; }

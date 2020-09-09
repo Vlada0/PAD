@@ -52,7 +52,7 @@ namespace PadLab1Broker
                 Storage.publisherStorage.Add(publisher);
                 return 200;//OK
             }
-            return 400; //
+            return 400; //Invalid username
             
         }
 
