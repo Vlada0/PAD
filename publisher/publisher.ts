@@ -21,10 +21,10 @@ client.on('data', function(data){
     let json = JSON.parse(data.toString());
     let statusCode = json.statusCode;
     switch(statusCode) {
-        case "200":
+        case 200:
             askIfContinue();
             break;
-        case "400":
+        case 400:
             console.log('Invalid username');
             askUsername();
             

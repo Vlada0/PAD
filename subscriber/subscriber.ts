@@ -31,13 +31,13 @@ client.on('data', function(data) {
     let statusCode = json.statusCode;
 
     switch(statusCode) {
-        case "200":
+        case 200:
             console.log('Successfull subscribtion')
             break;
-        case  "401": 
+        case  401: 
             console.log('Topic already exists')
             break;
-        case "402":
+        case 402:
             console.log('Topic doesn\'t exists')
             break;
     }
