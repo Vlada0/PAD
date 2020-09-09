@@ -10,14 +10,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-client.connect(port, host, function() {
-    rl.question('Enter topic:', (topic) => {
-        subscribeOn(topic);
-    })
-})
-
 rl.on('line', (topic) => {
-    console.log(topic);
     let arr = topic.split(' ');
     if(arr.shift() === 'rem') {
         unsubscribeOn(arr.join(' '));
@@ -26,13 +19,27 @@ rl.on('line', (topic) => {
     }
 })
 
-client.on('data', function(data) {
+
+client.connect(port, host, () => {
+    rl.question('Enter topic:', (topic) => {
+        subscribeOn(topic);
+    })
+})
+
+
+client.on('error', () => {
+    console.log('Cannot connect');
+    rl.close();
+    client.destroy();
+})
+
+client.on('data', (data) => {
     let json = JSON.parse(data.toString());
     let statusCode = json.statusCode;
 
     switch(statusCode) {
         case 200:
-            console.log('Successfull subscribtion')
+            console.log('Successfull operation')
             break;
         case  401: 
             console.log('Topic already exists')

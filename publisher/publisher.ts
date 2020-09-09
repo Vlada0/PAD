@@ -12,12 +12,12 @@ const rl = readline.createInterface({
 });
 
 
-client.connect(port, host, function() {
+client.connect(port, host, () => {
     console.log('Connected');
     askUsername();
 });
 
-client.on('data', function(data){
+client.on('data', (data) => {
     let json = JSON.parse(data.toString());
     let statusCode = json.statusCode;
     switch(statusCode) {
@@ -32,7 +32,7 @@ client.on('data', function(data){
     }
 })
 
-client.on('error', function(error){
+client.on('error', (error) => {
     console.log('Error')
     rl.close();
     client.destroy();
