@@ -10,12 +10,6 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-client.connect(port, host, function() {
-    rl.question('Enter topic:', (topic) => {
-        subscribeOn(topic);
-    })
-})
-
 rl.on('line', (topic) => {
     let arr = topic.split(' ');
     if(arr.shift() === 'rem') {
@@ -25,7 +19,21 @@ rl.on('line', (topic) => {
     }
 })
 
-client.on('data', function(data) {
+
+client.connect(port, host, () => {
+    rl.question('Enter topic:', (topic) => {
+        subscribeOn(topic);
+    })
+})
+
+
+client.on('error', () => {
+    console.log('Cannot connect');
+    rl.close();
+    client.destroy();
+})
+
+client.on('data', (data) => {
     let json = JSON.parse(data.toString());
     let statusCode = json.statusCode;
 
