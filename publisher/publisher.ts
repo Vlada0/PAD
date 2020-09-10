@@ -5,12 +5,10 @@ const client = new net.Socket();
 const port = 11000;
 const host = '127.0.0.1';
 
-
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-
 
 client.connect(port, host, () => {
     console.log('Connected');
@@ -27,8 +25,6 @@ client.on('data', (data) => {
         case 400:
             console.log('Invalid username');
             askUsername();
-            
-
     }
 })
 
@@ -65,6 +61,7 @@ function askIfContinue() {
         }
     })
 }
+
 function sendUsername(userName) {
     let data = {
         publisherName: userName
@@ -76,5 +73,5 @@ function sendUsername(userName) {
 function askUsername() {
     rl.question('Enter username ', (answer) => {
         sendUsername(answer);
-      });   
+    });   
 }

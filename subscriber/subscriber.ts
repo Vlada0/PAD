@@ -4,7 +4,6 @@ const readline = require('readline');
 const client = new net.Socket();
 const port = 11000;
 const host = '127.0.0.1';
-
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -19,13 +18,11 @@ rl.on('line', (topic) => {
     }
 })
 
-
 client.connect(port, host, () => {
     rl.question('Enter topic:', (topic) => {
         subscribeOn(topic);
     })
 })
-
 
 client.on('error', () => {
     console.log('Cannot connect');
