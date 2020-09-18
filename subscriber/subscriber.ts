@@ -8,12 +8,9 @@ const host = '127.0.0.1';
 var udpPort = 6024;
 var broadcastAdr = "0.0.0.0";
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
 const server = udp.createSocket('udp4')
+
+let isConnected = false;
 
 server.on('listening', () => {
     const address = server.address()
@@ -24,30 +21,56 @@ server.on('listening', () => {
     console.log("udp_server", "info", 'Server is listening at port ' + port)
     console.log("udp_server", "info", 'Server ip :' + ipaddr)
     console.log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
+    server.setBroadcast(true);
+    var message = Buffer.from("Give me port!");
+    console.log(message)
+    for(let i = 1; i < 65535; i++) {
+        server.send(message, i, broadcastAdr);
+    }
 })
 
 server.on('message', (msg, info) => {
-    console.log("TEST!!@")
-    console.log(msg.toString());
-    // client.connect(json.port, host, () => {
-    //     rl.question('Enter topic:', (topic) => {
-    //         subscribeOn(topic);
-    //     })
-    // })
+    let json;
+
+    try {
+        json = JSON.parse(msg.toString());
+      } catch (e) {
+        console.log(msg.toString());
+        return
+    }
+
+    let port = json.port;
+    if (typeof port !== 'undefined') {
+        if (isConnected) {
+            client.destroy();
+            isConnected = false;
+        }
+
+        client.connect(port, host, () => {
+            console.log('Connected');
+            rl.question('Enter topic:', (topic) => {
+                subscribeOn(topic);
+            })
+        });
+    }
+});
+
+server.on('error', (error) => {
+    console.log(error);
+    if (error.code === 'EADDRINUSE') {
+        startServer();
+    }
 })
 
-server.bind(function() {
-    server.setBroadcast(true);
-    var message = Buffer.from("Give me port!");
-    server.send(message, 0, message.length, udpPort, broadcastAdr);
-})
+function startServer() {
+    let port = Math.floor(Math.random() * 65536) + 1;
+    server.bind(port, '127.0.0.1');
+}
 
-// const listener = udp.createSocket('udp4')
-
-// listener.on('message', (msg, info) => {
-//     console.log('Data received from server : ' + msg.toString())
-//     console.log('Received %d bytes from %s:%d\n', msg.length, info.address, info.port)
-// })
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
 rl.on('line', (topic) => {
     let arr = topic.split(' ');
@@ -100,3 +123,5 @@ function unsubscribeOn(topic) {
     let jsonData = JSON.stringify(data);
     client.write(jsonData);
 }
+
+startServer();

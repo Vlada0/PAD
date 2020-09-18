@@ -3,13 +3,14 @@ import { Socket } from "dgram";
 const udp = require('dgram');
 const readline = require('readline');
 const client = new net.Socket();
-const port = 11000;
 const host = '127.0.0.1';
 
 var udpPort = 6024;
 var broadcastAdr = "0.0.0.0";
 
 const server = udp.createSocket('udp4')
+
+let isConnected = false;
 
 server.on('listening', () => {
     const address = server.address()
@@ -23,20 +24,48 @@ server.on('listening', () => {
     server.setBroadcast(true);
     var message = Buffer.from("Give me port!");
     console.log(message)
-    server.send(message, 63347, broadcastAdr);
+    for(let i = 1; i < 65535; i++) {
+        server.send(message, i, broadcastAdr);
+    }
 })
 
 server.on('message', (msg, info) => {
     console.log("TEST")
-    let json = JSON.parse(msg.toString());
-    console.log(json);
-    // client.connect(json.port, host, () => {
-    //     console.log('Connected');
-    //     askUsername();
-    // });
+    let json;
+
+    try {
+        json = JSON.parse(msg.toString());
+      } catch (e) {
+        console.log("err");
+        return
+    }
+
+    let port = json.port;
+    if (typeof port !== 'undefined') {
+        if (isConnected) {
+            client.destroy();
+            isConnected = false;
+        }
+
+        client.connect(port, host, () => {
+            console.log('Connected');
+            askUsername();
+        });
+    }
+});
+
+server.on('error', (error) => {
+    console.log(error);
+    if (error.code === 'EADDRINUSE') {
+        startServer();
+    }
 })
 
-server.bind();
+function startServer() {
+    let port = Math.floor(Math.random() * 65536) + 1;
+    server.bind(port, '127.0.0.1');
+}
+
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -103,3 +132,5 @@ function askUsername() {
         sendUsername(answer);
     });   
 }
+
+startServer();
