@@ -1,5 +1,6 @@
 import * as net from "net";
 import { Socket } from "dgram";
+import { v4 as uuidv4 } from 'uuid';
 const udp = require('dgram');
 const readline = require('readline');
 const client = new net.Socket();
@@ -10,7 +11,10 @@ var broadcastAdr = "0.0.0.0";
 
 const server = udp.createSocket('udp4')
 
+let category = '';
+let location = '';
 let isConnected = false;
+let id;
 
 server.on('listening', () => {
     const address = server.address()
@@ -30,9 +34,7 @@ server.on('listening', () => {
 })
 
 server.on('message', (msg, info) => {
-    console.log("TEST")
     let json;
-
     try {
         json = JSON.parse(msg.toString());
       } catch (e) {
@@ -49,7 +51,7 @@ server.on('message', (msg, info) => {
 
         client.connect(port, host, () => {
             console.log('Connected');
-            askUsername();
+            setupPublisher();
         });
     }
 });
@@ -66,7 +68,6 @@ function startServer() {
     server.bind(port, '127.0.0.1');
 }
 
-
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -77,11 +78,10 @@ client.on('data', (data) => {
     let statusCode = json.statusCode;
     switch(statusCode) {
         case 200:
-            askIfContinue();
+            console.log('Broker recieved data')
             break;
         case 400:
-            console.log('Invalid username');
-            askUsername();
+            console.log('Wrong data');
     }
 })
 
@@ -91,32 +91,19 @@ client.on('error', (error) => {
     client.destroy();
 })
 
-function enterData() {
-    rl.question('Enter topic: ', (answer) => {
-        rl.question('Enter message: ', (messageAnswer) => {
-            sendMessage(answer, messageAnswer);
-        })
-    });
-}
-
-function sendMessage(topic, message) {
-    let data = {
-        topic: topic,
-        message: message
-    }
-    let jsonData = JSON.stringify(data);
-    client.write(jsonData);
-}
-
-function askIfContinue() {
-    rl.question('Do you want to send message? ', (answer) => {
-        if(answer === 'y' || answer === 'Y') {
-            enterData();
-        } else {
-            rl.close();
-            client.destroy();
+function sendMessage() {
+    let value = Math.floor(Math.random() * 10) + 1;
+    let dataToSend = {
+        operation: 'publish',
+        operationInfo: {
+            data: value,
+            category: category,
+            location: location,
+            id: id
         }
-    })
+    }
+    let jsonData = JSON.stringify(dataToSend);
+    client.write(jsonData);
 }
 
 function sendUsername(userName) {
@@ -127,10 +114,15 @@ function sendUsername(userName) {
     client.write(jsonData)
 }
 
-function askUsername() {
-    rl.question('Enter username ', (answer) => {
-        sendUsername(answer);
-    });   
+function setupPublisher() {
+    rl.question('Enter category: ', (answer) => {
+    rl.question('Enter location: ', (locationAnswer) => {
+        category = answer;
+        location = locationAnswer;
+        id = uuidv4();
+        setTimeout(sendMessage, 2000);
+    })
+    })
 }
 
 startServer();

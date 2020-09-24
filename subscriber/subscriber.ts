@@ -11,6 +11,7 @@ var broadcastAdr = "0.0.0.0";
 const server = udp.createSocket('udp4')
 
 let isConnected = false;
+let deviceType;
 
 server.on('listening', () => {
     const address = server.address()
@@ -48,6 +49,7 @@ server.on('message', (msg, info) => {
 
         client.connect(port, host, () => {
             console.log('Connected');
+            setupSubscriber();
             rl.question('Enter topic:', (topic) => {
                 subscribeOn(topic);
             })
@@ -108,20 +110,85 @@ client.on('data', (data) => {
     }
 })
 
-function subscribeOn(topic) {
-    let data = {
-        subscribe: topic
+function subscribeDeviceOn(location, category) {
+    let dataToSend = {
+        operation: 'subscribeDevice',
+        operationInfo: {
+            location: location,
+            category: category
+        }
     }
-    let jsonData = JSON.stringify(data);
+    let jsonData = JSON.stringify(dataToSend);
     client.write(jsonData);
 }
 
-function unsubscribeOn(topic) {
-    let data = {
-        unsubscribe: topic
+function subscribeOn(keyWord) {
+    let dataToSend = {
+        operation: 'subscribe',
+        operationInfo: {
+            keyWord: keyWord
+        }
     }
-    let jsonData = JSON.stringify(data);
+    let jsonData = JSON.stringify(dataToSend);
     client.write(jsonData);
+}
+
+function unsubscribeOn(keyWord) {
+    let dataToSend = {
+        operation: 'unsubscribe',
+        operationInfo: {
+            keyWord: keyWord
+        }
+    }
+    let jsonData = JSON.stringify(dataToSend);
+    client.write(jsonData);
+}
+
+function setupSubscriber() {
+    selectDevice();
+    switch(deviceType) {
+        case '1':
+            subscribeDeviceOn('temperature', 'kitchen')
+            break;
+        case '2': 
+            subscribeDeviceOn('brightness', 'bedroom')
+            break;
+        case '3':
+            startUserFlow();
+            break;
+    }
+}
+
+function selectDevice() {
+    rl.question('Select device \n1. Smart window \n2. Lamp \n3. Cellphone', (answer) => {
+        if(answer === '1' || answer === '2' || answer === '3') {
+            deviceType = answer;
+            
+        } else {
+            console.log('Wrong answer');
+            return setupSubscriber();
+        }
+    })
+}
+
+function startUserFlow() {
+    while(true) {
+        rl.question('Select option \n1. Subscribe \n2. Unsubscribe', (answer) => {
+            switch(answer) {
+                case '1':
+                    rl.question('', (answer) => {
+                        subscribeOn(answer);
+                    });
+                    break;
+                case '2':
+                    rl.question('', (answer) => {
+                        unsubscribeOn(answer);
+                    });
+                default:
+                    return;
+            }
+        })
+    }
 }
 
 startServer();
