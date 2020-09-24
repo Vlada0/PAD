@@ -102,8 +102,9 @@ function sendMessage() {
             id: id
         }
     }
+    console.log(dataToSend);
     let jsonData = JSON.stringify(dataToSend);
-    client.write(jsonData);
+   // client.write(jsonData);
 }
 
 function sendUsername(userName) {
@@ -120,9 +121,11 @@ function setupPublisher() {
         category = answer;
         location = locationAnswer;
         id = uuidv4();
-        setTimeout(sendMessage, 2000);
+        setInterval(sendMessage, 2000);
     })
     })
 }
 
-startServer();
+// startServer();
+
+setupPublisher();
