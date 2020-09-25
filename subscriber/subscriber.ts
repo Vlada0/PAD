@@ -103,7 +103,7 @@ client.on('data', (data) => {
     }
 
     if(typeof statusCode === 'undefined') {
-        console.log(json.username + ' ' + json.topic + ' ' + json.message);
+        console.log(json.id + ' ' + json.category + ' ' + json.location + ' ' + json.data);
     }
 })
 
