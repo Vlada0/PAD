@@ -104,7 +104,7 @@ function sendMessage() {
     }
     console.log(dataToSend);
     let jsonData = JSON.stringify(dataToSend);
-   // client.write(jsonData);
+    client.write(jsonData);
 }
 
 function sendUsername(userName) {
