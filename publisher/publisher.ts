@@ -107,6 +107,18 @@ function sendMessage() {
     client.write(jsonData);
 }
 
+function registerDevice() {
+    let dataToSend = {
+        operation: "registerDevice",
+        operationInfo: {
+            id: id
+        }
+    }
+
+    let jsonData = JSON.stringify(dataToSend);
+    client.write(jsonData);
+}
+
 function sendUsername(userName) {
     let data = {
         publisherName: userName
@@ -121,6 +133,7 @@ function setupPublisher() {
             category = answer;
             location = locationAnswer;
             id = uuidv4();
+            registerDevice()
             setInterval(sendMessage, 2000);
         })
     })
