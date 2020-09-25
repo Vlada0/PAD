@@ -11,7 +11,6 @@ var broadcastAdr = "0.0.0.0";
 const server = udp.createSocket('udp4')
 
 let isConnected = false;
-let deviceType;
 
 server.on('listening', () => {
     const address = server.address()
@@ -24,9 +23,10 @@ server.on('listening', () => {
     console.log("udp_server", "info", 'Server is IP4/IP6 : ' + family)
     server.setBroadcast(true);
     var message = Buffer.from("Give me port!");
-    console.log(message)
     for(let i = 1; i < 65535; i++) {
-        server.send(message, i, broadcastAdr);
+        if (i !== port) {
+           server.send(message, i, broadcastAdr);
+        }
     }
 })
 
@@ -50,9 +50,6 @@ server.on('message', (msg, info) => {
         client.connect(port, host, () => {
             console.log('Connected');
             setupSubscriber();
-            rl.question('Enter topic:', (topic) => {
-                subscribeOn(topic);
-            })
         });
     }
 });
@@ -146,49 +143,42 @@ function unsubscribeOn(keyWord) {
 
 function setupSubscriber() {
     selectDevice();
-    switch(deviceType) {
-        case '1':
-            subscribeDeviceOn('temperature', 'kitchen')
-            break;
-        case '2': 
-            subscribeDeviceOn('brightness', 'bedroom')
-            break;
-        case '3':
-            startUserFlow();
-            break;
-    }
 }
 
 function selectDevice() {
     rl.question('Select device \n1. Smart window \n2. Lamp \n3. Cellphone', (answer) => {
         if(answer === '1' || answer === '2' || answer === '3') {
-            deviceType = answer;
+            switch(answer) {
+                case '1':
+                    subscribeDeviceOn('temperature', 'kitchen')
+                    break;
+                case '2': 
+                    subscribeDeviceOn('brightness', 'bedroom')
+                    break;
+                case '3':
+                    startUserFlow();
+                    break;
+            }
             
         } else {
             console.log('Wrong answer');
-            return setupSubscriber();
+            selectDevice()
         }
     })
 }
 
 function startUserFlow() {
-    while(true) {
-        rl.question('Select option \n1. Subscribe \n2. Unsubscribe', (answer) => {
-            switch(answer) {
-                case '1':
-                    rl.question('', (answer) => {
-                        subscribeOn(answer);
-                    });
-                    break;
-                case '2':
-                    rl.question('', (answer) => {
-                        unsubscribeOn(answer);
-                    });
-                default:
-                    return;
-            }
-        })
-    }
+    rl.question('Select option \n1. Subscribe \n2. Unsubscribe', (answer) => {
+        if(answer === '1') {
+            rl.question('Enter category or location', (answer) => {
+                subscribeOn(answer);
+            });
+        } else if(answer === '2') {
+            rl.question('Enter category or location', (answer) => {
+                unsubscribeOn(answer);
+            });
+        } 
+    })
 }
 
 startServer();
