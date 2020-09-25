@@ -117,15 +117,13 @@ function sendUsername(userName) {
 
 function setupPublisher() {
     rl.question('Enter category: ', (answer) => {
-    rl.question('Enter location: ', (locationAnswer) => {
-        category = answer;
-        location = locationAnswer;
-        id = uuidv4();
-        setInterval(sendMessage, 2000);
-    })
+        rl.question('Enter location: ', (locationAnswer) => {
+            category = answer;
+            location = locationAnswer;
+            id = uuidv4();
+            setInterval(sendMessage, 2000);
+        })
     })
 }
 
-// startServer();
-
-setupPublisher();
+startServer();
