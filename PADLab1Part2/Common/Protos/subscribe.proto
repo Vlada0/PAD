@@ -1,0 +1,37 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "GrpcAgent";
+
+package GrpcAgent;
+
+service Subscriber {
+  rpc Subscribe (SubscribeRequest) returns (SubscribeReply);
+  rpc Unsubscribe (UnsubscribeRequest) returns (SubscribeReply);
+  rpc Connect (ConnectRequest) returns (SubscribeReply);
+  rpc DeviceSubscribe (DeviceSubscribeRequest) returns (SubscribeReply);
+}
+
+
+message SubscribeRequest {
+  string keyWord = 1;
+  string address = 2;
+}
+
+message DeviceSubscribeRequest {
+  string category = 1;
+  string location = 2;
+  string address = 3;
+}
+
+message UnsubscribeRequest {
+  string keyWord = 1;
+  string address = 2;
+}
+message ConnectRequest {
+  string address = 1;
+  bool isDevice = 2;
+}
+
+message SubscribeReply {
+  bool isSuccess = 1;
+}

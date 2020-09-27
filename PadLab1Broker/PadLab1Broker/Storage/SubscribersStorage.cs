@@ -9,12 +9,20 @@ namespace PadLab1Broker
     public class SubscribersStorage: ConnectStorage<SubscriberInfo>
     {
         
-        public List<SubscriberInfo> GetConnectionsByTopic(string topic)
+        public List<SubscriberInfo> GetConnectionsByKeyWord(Payload message)
         {
             List<SubscriberInfo> selected;
             lock (locker)
             {
-                selected = connections.Where(x => x.topicList.Contains(topic)).ToList();
+                selected = connections.Where(x => x.isDevice ? (x.keyWords.Contains(message.category) && x.keyWords.Contains(message.location)):
+                (x.keyWords.Contains(message.category) || x.keyWords.Contains(message.location))).ToList();
+                
+                foreach(var connection in connections)
+                {
+                    Console.WriteLine(connection);
+                }
+               //connections.ForEach(x => Console.WriteLine($" { x.keyWords.FirstOrDefault()} {x.keyWords.LastOrDefault()}"));
+                
             }
             return selected;
         }

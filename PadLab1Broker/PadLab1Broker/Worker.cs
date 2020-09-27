@@ -20,7 +20,8 @@ namespace PadLab1Broker
 
                     if (payload != null)
                     {
-                        var connections = Storage.subscriberStorage.GetConnectionsByTopic(payload.topic);
+                        var connections = Storage.subscriberStorage.GetConnectionsByKeyWord(payload);
+                        Console.WriteLine(connections.Count);
 
                         foreach(var connection in connections)
                         {

@@ -8,24 +8,29 @@ namespace PadLab1Broker
 {
     public class PublisherStorage : ConnectStorage<PublisherInfo>
     {
-        public bool isValidUserName(string userName)
+        public bool isValidDevice(string id)
         {
             int count;
             lock (locker)
             {
-                count = connections.Where(x => x.UserName == userName).ToList().Count;
+                count = connections.Where(x => x.Id == id).ToList().Count;
             }
             return count==0;
         }
 
         public string GetUserByAddress(string address)
         {
-            string userName;
+            string id = "";
+
             lock (locker)
             {
-                userName = connections.Where(x => x.Socket.RemoteEndPoint.ToString() == address).ToList().LastOrDefault().UserName;
+                var user = connections.Where(x => x.Socket.RemoteEndPoint.ToString() == address).ToList().LastOrDefault();
+                if(user != null)
+                {
+                    id = user.Id;
+                }
             }
-            return userName;
+            return id;
 
         }
     }

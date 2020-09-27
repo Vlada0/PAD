@@ -25,12 +25,12 @@ namespace PadLab1Broker
             }
         }
 
-        public void Remove(string address)
+        public int Remove(string address)
         {
             lock (locker)
             {
-                connections.RemoveAll(x => x.Socket.RemoteEndPoint.ToString() == address);
-            }
+               return connections.RemoveAll(x => x.Socket.RemoteEndPoint.ToString() == address);
+            }  
         }
     }
 }

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace PadLab1Broker
 {
-    class Payload
+    public class PortData
     {
-        public string topic { get; set; }
-        public string username { get; set; }
-        public string message { get; set; }
+        public int port { get; set; }
+
+        public PortData(int port)
+        {
+            this.port = port;
+        }
     }
 }

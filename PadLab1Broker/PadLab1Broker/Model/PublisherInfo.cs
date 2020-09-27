@@ -8,12 +8,12 @@ namespace PadLab1Broker
 {
     public class PublisherInfo:ConnectInformation
     {
-        public string UserName { get; set; }
-        public PublisherInfo(ConnectInformation connection, string userName):base()
+        public string Id { get; set; }
+        public PublisherInfo(ConnectInformation connection, string id):base()
         {
             base.Socket = connection.Socket;
             base.Buffer = connection.Buffer;
-            UserName = userName;
+            Id = id;
         }
         
     }

@@ -16,18 +16,22 @@ namespace PadLab1Broker
         }
     }
 
-    class UserNameResponse
+    class SubscribeData
     {
-        public string publisherName { get; set; }
+        public string keyWord { get; set; }
     }
 
-    class SubscribeResponse
+    class UnsubscribeData
     {
-        public string subscribe { get; set; }
+        public string keyWord { get; set; }
     }
-
-    class UnsubscribeResponse
+    class SubscribeDeviceData
     {
-        public string unsubscribe { get; set; }
+        public string category { get; set; }
+        public string location { get; set; }
+    }
+    class RegisterDeviceData
+    {
+        public string id { get; set; }
     }
 }

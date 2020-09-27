@@ -19,13 +19,29 @@ namespace PadLab1Broker
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
-        public void StartBroker(string ip, int port)
+
+        public void StartBroker(string ip)
         {
-            socket.Bind(new IPEndPoint(IPAddress.Parse(ip), port));
-            socket.Listen(Limit);
-            SocketAccept();
+            bool isInvalidPort = true;
+            Random rnd = new Random();
+            while (isInvalidPort)
+            {
+                try
+                {
+                    int value = rnd.Next(1, 65535);
+                    socket.Bind(new IPEndPoint(IPAddress.Parse(ip), value));
+                    isInvalidPort = false;
+                    socket.Listen(Limit);
+                    SocketAccept();
+                    Broadcast.Send(value);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Port is busy");
+                }
+            }  
         }
-        
+       
         private void SocketAccept()
         {
             socket.BeginAccept(AcceptCallBack, null);
@@ -70,7 +86,7 @@ namespace PadLab1Broker
             }
             catch (Exception e)
             {
-                Console.WriteLine("Не удалось получить данные "+e.Message);
+                Console.WriteLine("Не удалось получить данные "+ e.Message);
             }
             finally
             {
@@ -78,12 +94,18 @@ namespace PadLab1Broker
                 {
                     connection.Socket.BeginReceive(connection.Buffer, 0, connection.Buffer.Length, SocketFlags.None, ReceiveCallBack, connection);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    Console.WriteLine("Ошибка " + e.Message);
+                    
                     var address = connection.Socket.RemoteEndPoint.ToString();
-                    Storage.publisherStorage.Remove(address);
-                    Storage.subscriberStorage.Remove(address);
+                    var id = Storage.publisherStorage.GetUserByAddress(address);
+                    if (Storage.publisherStorage.Remove(address) > 0)
+                    {
+                        Console.WriteLine($"Датчик вышел из строя: {id}");
+                    }
+                    else {
+                        Storage.subscriberStorage.Remove(address);
+                    }
                     
                     connection.Socket.Close();                   
                 }
