@@ -78,15 +78,17 @@ namespace PadLab1Broker
             var unsubscribeData = JsonConvert.DeserializeObject<UnsubscribeData>(message);
             var keyWord = unsubscribeData.keyWord; 
             var subscriber = Storage.subscriberStorage.Contains(connectionInfo.Socket.RemoteEndPoint.ToString());
-            var statusCode = subscriber.Remove(keyWord);
-            return statusCode;
+            if (subscriber != null)
+            {
+                return subscriber.Remove(keyWord);
+            }
+            return 402;
         }
 
         private static int HandleSubscribeDevice(ConnectInformation connectionInfo, string message)
         {
             Console.WriteLine(message);
             var subscribeDeviceData = JsonConvert.DeserializeObject<SubscribeDeviceData>(message);
-            Console.WriteLine("mess");
             var subscriber = new SubscriberInfo(connectionInfo);
             Storage.subscriberStorage.Add(subscriber);
 

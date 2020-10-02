@@ -32,22 +32,21 @@ server.on('listening', () => {
 
 server.on('message', (msg, info) => {
     let json;
-
     try {
         json = JSON.parse(msg.toString());
       } catch (e) {
-        console.log(msg.toString());
         return
     }
 
     let port = json.port;
     if (typeof port !== 'undefined') {
-        if (isConnected) {
+       /* if (isConnected) {
             client.destroy();
             isConnected = false;
-        }
+        }*/
 
         client.connect(port, host, () => {
+			rl.resume();
             console.log('Connected');
             setupSubscriber();
         });
@@ -55,7 +54,6 @@ server.on('message', (msg, info) => {
 });
 
 server.on('error', (error) => {
-    console.log(error);
     if (error.code === 'EADDRINUSE') {
         startServer();
     }
@@ -81,8 +79,8 @@ rl.on('line', (topic) => {
 })
 
 client.on('error', () => {
-    console.log('Cannot connect');
-    rl.close();
+    console.log('Missing connection with broker');
+    rl.pause();
     client.destroy();
 })
 
@@ -101,9 +99,9 @@ client.on('data', (data) => {
             console.log('Topic doesn\'t exists')
             break;
     }
-
-    if(typeof statusCode === 'undefined') {
-        console.log(json.id + ' ' + json.category + ' ' + json.location + ' ' + json.data);
+	let operation = json.operation;
+    if(typeof operation !== 'undefined'&& operation === 'newMessage') {
+        console.log(json.operationInfo.id + ' ' + json.operationInfo.category + ' ' + json.operationInfo.location + ' ' + json.operationInfo.data);
     }
 })
 
@@ -146,7 +144,7 @@ function setupSubscriber() {
 }
 
 function selectDevice() {
-    rl.question('Select device \n1. Smart window \n2. Lamp \n3. Cellphone', (answer) => {
+    rl.question('Select device \n1. Smart window \n2. Lamp \n3. Cellphone \n', (answer) => {
         if(answer === '1' || answer === '2' || answer === '3') {
             switch(answer) {
                 case '1':
@@ -168,7 +166,7 @@ function selectDevice() {
 }
 
 function startUserFlow() {
-    rl.question('Select option \n1. Subscribe \n2. Unsubscribe', (answer) => {
+    rl.question('Select option \n1. Subscribe \n2. Unsubscribe \n', (answer) => {
         if(answer === '1') {
             rl.question('Enter category or location', (answer) => {
                 subscribeOn(answer);

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PadLab1Broker.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +23,12 @@ namespace PadLab1Broker
                     {
                         var connections = Storage.subscriberStorage.GetConnectionsByKeyWord(payload);
                         Console.WriteLine(connections.Count);
-
-                        foreach(var connection in connections)
+                        var newMessage = new NewMessage("newMessage", payload);
+                        var message = JsonConvert.SerializeObject(newMessage);
+                        Console.WriteLine(message);
+                        byte[] data = Encoding.UTF8.GetBytes(message);
+                        foreach (var connection in connections)
                         {
-                            var message = JsonConvert.SerializeObject(payload);
-                            byte[] data = Encoding.UTF8.GetBytes(message);
-
                             connection.Socket.Send(data);
                         }
                     }

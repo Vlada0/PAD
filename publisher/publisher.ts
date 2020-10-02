@@ -29,7 +29,9 @@ server.on('listening', () => {
     var message = Buffer.from("Give me port!");
     console.log(message)
     for(let i = 1; i < 65535; i++) {
-        server.send(message, i, broadcastAdr);
+		if(i!==port){
+			server.send(message, i, broadcastAdr);
+		}
     }
 })
 
@@ -38,18 +40,18 @@ server.on('message', (msg, info) => {
     try {
         json = JSON.parse(msg.toString());
       } catch (e) {
-        console.log("err");
         return
     }
 
     let port = json.port;
     if (typeof port !== 'undefined') {
-        if (isConnected) {
+        /*if (isConnected) {
             client.destroy();
             isConnected = false;
-        }
+        }*/
 
         client.connect(port, host, () => {
+			rl.resume();
             console.log('Connected');
             setupPublisher();
         });
@@ -86,8 +88,8 @@ client.on('data', (data) => {
 })
 
 client.on('error', (error) => {
-    console.log('Error')
-    rl.close();
+    console.log('Missing connection with broker')
+    rl.pause();
     client.destroy();
 })
 

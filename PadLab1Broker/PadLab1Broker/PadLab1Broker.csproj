@@ -49,6 +49,7 @@
     <Compile Include="Broadcast.cs" />
     <Compile Include="BrSocket.cs" />
     <Compile Include="Model\ConnectInformation.cs" />
+    <Compile Include="Model\NewMessage.cs" />
     <Compile Include="Storage\ConnectStorage.cs" />
     <Compile Include="Handler.cs" />
     <Compile Include="Model\Payload.cs" />
