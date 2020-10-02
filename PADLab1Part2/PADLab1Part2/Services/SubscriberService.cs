@@ -18,57 +18,63 @@ namespace PADLab1Part2.Services
         }
         public override Task<SubscribeReply> Subscribe(SubscribeRequest request, ServerCallContext context)
         {
+            int statusCode;
             Console.WriteLine($"New client trying to subscribe {request.Address} {request.KeyWord}");
             try
             {
-                connectionStorage.Subscribe(request.KeyWord, request.Address);
+                statusCode = connectionStorage.Subscribe(request.KeyWord, request.Address);
             }
             catch (Exception e)
             {
+                statusCode = 401;
                 Console.WriteLine($"Could not add new connection {request.Address} {request.KeyWord} {e.Message}");
             }
-            
+
             return Task.FromResult(new SubscribeReply()
             {
-                IsSuccess = true
+                StatusCode = statusCode
             });
         }
 
         public override Task<SubscribeReply> DeviceSubscribe(DeviceSubscribeRequest request, ServerCallContext context)
         {
+            int statusCode;
             Console.WriteLine($"New client trying to subscribe {request.Address} {request.Category} {request.Category}");
             try
             {
                 string[] keyWords = new string[] { request.Category, request.Location };
-                connectionStorage.Subscribe(keyWords, request.Address);
+                statusCode = connectionStorage.Subscribe(keyWords, request.Address);
             }
             catch (Exception e)
             {
+                statusCode = 401;
                 Console.WriteLine($"Could not subscribe {request.Address} {request.Location} {request.Category} {e.Message}");
             }
 
             return Task.FromResult(new SubscribeReply()
             {
-                IsSuccess = true
+                StatusCode = statusCode
             });
         }
 
         public override Task<SubscribeReply> Unsubscribe(UnsubscribeRequest request, ServerCallContext context)
         {
+            int statusCode;
             Console.WriteLine($"New client trying to unsubscribe {request.Address} {request.KeyWord}");
             try
             {
-                connectionStorage.Remove(request.KeyWord, request.Address);
+                statusCode = connectionStorage.Remove(request.KeyWord, request.Address);
             }
             catch (Exception e)
             {
+                statusCode = 402;
                 Console.WriteLine($"Could not unsubscribe {request.Address} {request.KeyWord} {e.Message}");
             }
 
             return Task.FromResult(new SubscribeReply()
             {
-                IsSuccess = true
-            });
+                StatusCode = statusCode
+            }) ;
         }
 
         public override Task<SubscribeReply> Connect (ConnectRequest request, ServerCallContext context)
@@ -85,7 +91,7 @@ namespace PADLab1Part2.Services
 
             return Task.FromResult(new SubscribeReply()
             {
-                IsSuccess = true
+               StatusCode = 200
             });
         }
 

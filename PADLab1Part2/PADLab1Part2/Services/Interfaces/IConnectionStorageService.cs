@@ -8,16 +8,16 @@ namespace PADLab1Part2.Services.Interfaces
 {
     public interface IConnectionStorageService
     {
-        void Add(Connection connection);
+        int Add(Connection connection);
 
-        void Subscribe(string keyword, string address);
+        int Subscribe(string keyword, string address);
 
         void Remove(string address);
 
-        void Remove(string keyword, string address);
+        int Remove(string keyword, string address);
 
         IList<Connection> GetConnections(Message message);
 
-        void Subscribe(string[] keywords, string address);
+        int Subscribe(string[] keywords, string address);
     }
 }

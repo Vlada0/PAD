@@ -56,11 +56,11 @@ namespace Receiver
             try
             {
                 var reply = client.Connect(request);
-                Console.WriteLine($"Reply: {reply.IsSuccess}");
+                Console.WriteLine($"Reply: {reply.StatusCode}");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error connecting: {e.Message}");
+                Console.WriteLine($"Error connecting");
             }
         }
         private static string ShowMenu()
@@ -117,7 +117,11 @@ namespace Receiver
             try
             {
                 var reply = client.Subscribe(request);
-                Console.WriteLine($"Reply: {reply.IsSuccess}");
+                Console.WriteLine($"Reply: {reply.StatusCode}");
+                if (reply.StatusCode != 200)
+                {
+                    Console.WriteLine("Cannot subscribe");
+                }
             }
             catch (Exception e)
             {
@@ -141,11 +145,11 @@ namespace Receiver
             try
             {
                 var reply = client.DeviceSubscribe(request);
-                Console.WriteLine($"Reply: {reply.IsSuccess}");
+                Console.WriteLine($"Reply: {reply.StatusCode}");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error subscribing: {e.Message}");
+                Console.WriteLine($"Error subscribing");
             }
             Console.ReadLine();
         }
@@ -164,11 +168,15 @@ namespace Receiver
             try
             {
                 var reply = client.Unsubscribe(request);
-                Console.WriteLine($"Reply: {reply.IsSuccess}");
+                Console.WriteLine($"Reply: {reply.StatusCode}");
+                if (reply.StatusCode != 200)
+                {
+                    Console.WriteLine("Cannot unsubscribe");
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error subscribing: {e.Message}");
+                Console.WriteLine($"Error subscribing");
             }
         }
     }

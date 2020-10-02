@@ -33,5 +33,5 @@ message ConnectRequest {
 }
 
 message SubscribeReply {
-  bool isSuccess = 1;
+   int32 statusCode = 1;
 }

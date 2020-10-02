@@ -24,7 +24,7 @@ namespace PADLab1Part2.Services
 
             return Task.FromResult(new PublishReply()
             {
-                IsSuccess = true
+                StatusCode = 200
             });
         }
     }

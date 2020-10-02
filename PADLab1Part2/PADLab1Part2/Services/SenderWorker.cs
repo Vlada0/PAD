@@ -55,7 +55,7 @@ namespace PADLab1Part2.Services
                         try
                         {
                             var reply = client.Notify(request);
-                            Console.WriteLine($"Notified subscriber {connection.Address} with {message.Data}. Response: {reply.IsSuccess}");
+                            Console.WriteLine($"Notified subscriber {connection.Address} with {message.Data}. Response: {reply.StatusCode}");
                         }
                         catch(RpcException rpcException)
                         {

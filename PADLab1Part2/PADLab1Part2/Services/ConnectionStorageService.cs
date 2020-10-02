@@ -17,11 +17,12 @@ namespace PADLab1Part2.Services
             connections = new List<Connection>();
             locker = new object();
         }
-        public void Add(Connection connection)
+        public int Add(Connection connection)
         {
             lock (locker)
             {
                 connections.Add(connection);
+                return 200;
             }
         }
 
@@ -43,31 +44,35 @@ namespace PADLab1Part2.Services
             }
         }
 
-        public void Remove(string keyWord, string address)
+        public int Remove(string keyWord, string address)
         {
             lock (locker)
             {
                 var connection = connections.Where(x => x.Address == address).ToList().FirstOrDefault();
-                if (connection!=null)
+                if (connection!=null&&connection.keyWordList.Contains(keyWord))
                 {
                     connection.keyWordList.Remove(keyWord);
+                    return 200;
                 }
+                return 402;
             }
         }
 
-        public void Subscribe(string keyWord, string address)
+        public int Subscribe(string keyWord, string address)
         {
             lock (locker)
             {
                 var connection = connections.Where(x => x.Address == address).ToList().FirstOrDefault();
-                if (connection != null)
+                if (connection != null && !connection.keyWordList.Contains(keyWord))
                 {
                     connection.keyWordList.Add(keyWord);
+                    return 200;
                 }
+                return 401;
             }
         }
 
-        public void Subscribe(string[] keywords, string address)
+        public int Subscribe(string[] keywords, string address)
         {
             lock (locker)
             {
@@ -76,6 +81,7 @@ namespace PADLab1Part2.Services
                 {
                     connection.keyWordList.AddRange(keywords);
                 }
+                return 200;
             }
         }
     }

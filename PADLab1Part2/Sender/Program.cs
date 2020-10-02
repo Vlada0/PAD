@@ -41,11 +41,11 @@ namespace Sender
             try
             {
                 var reply = await client.PublishMessageAsync(request);
-                Console.WriteLine($"Publish reply: {reply.IsSuccess}");
+                Console.WriteLine($"Publish reply: {reply.StatusCode}");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error  {e.Message}");
+                Console.WriteLine($"Broker is down ");
             }
             GC.Collect();
         }

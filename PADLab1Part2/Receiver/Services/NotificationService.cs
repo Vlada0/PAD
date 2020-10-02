@@ -12,7 +12,7 @@ namespace Receiver.Services
         public override Task<NotifyReply> Notify(NotifyRequest request, ServerCallContext context)
         {
             Console.WriteLine($"Received: {request.Id} {request.Category} {request.Location} {request.Data}");
-            return Task.FromResult(new NotifyReply() { IsSuccess = true });
+            return Task.FromResult(new NotifyReply() { StatusCode = 200 });
         }
     }
 }
